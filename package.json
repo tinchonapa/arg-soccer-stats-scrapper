@@ -1,0 +1,16 @@
+{
+  "name": "arg-stats-scrapper",
+  "version": "1.0.0",
+  "description": "Scrapper for Argentinean Soccer league stats",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Martin Naparstek",
+  "license": "ISC",
+  "dependencies": {
+    "chromedriver": "^81.0.0",
+    "fs": "0.0.1-security",
+    "selenium-webdriver": "^4.0.0-alpha.7"
+  }
+}
