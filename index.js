@@ -8,41 +8,23 @@ var driver = new webdriver.Builder()
  .build();
 driver.get('http://resonant.stats.com/arge/teams.asp'); // getting the URL
 
-
-pause(2, getTeams);
-var length = 24;
-var lengthId = 72;
+var length = 24; // total of rows(teams)
+var lengthId = 72; // total of ids that will be retrieved since HTML it's not properly designed
 var count = 0;
-var storage = {
+var storage = { // storage of names and ids
   teamN: [],
   teamId: []
 };
-var storageId = [];
-let uniqueId = [];
+var storageId = []; // place where it will be stored the raw data of id
+let uniqueId = []; // place where storage
 var finalData = '';
 var teamTable = driver.findElement(By.className('shsTable shsBorderTable'));
+
+pause(2, getTeams);
+
 function getTeams(){
   console.log('Starting...')
   pause(3, function(){
-    // var teamTable = driver.findElement(By.className('shsTable shsBorderTable'));
-    // var getRows = teamTable.findElements(By.css('tr'));
-    // var getCells = getRows.findElements(By.css('td'));
-    // var getTeams = getRows.findElements(By.className('shs1stCol shsNamD'));
-    // console.log('Team ', getTeams);
-    /*var getRows = teamTable.findElements(By.className('shs1stCol shsNamD'));
-    getRows.then(function(element){
-       console.log('Equipos: ', element[i]);
-       for (var i = 0; i < element.length; i++) {
-        //  if ( element[i].)
-         element[i].getText().then(function(txt){
-          if ( txt != 'undefined' ) {
-            name = txt;
-            storage.push(name)
-            console.log(storage);
-          }
-        });
-      }
-    });*/
     var getRowsTeams = teamTable.findElements(By.className('shs1stCol shsNamD'));
     if ( count !== length ) {
       getRowsTeams.then((element) => {
@@ -63,25 +45,21 @@ function getTeams(){
 
 function getId(){
   pause(1, function(){
-    if ( count !== lengthId ) { // *** make new variable for length to === length*3 instead of length ***
+    // new variable for length to === length*3 since there are 3 links per row
+    if ( count !== lengthId ) {
       var getRows = teamTable.findElements(By.css('a'));
-      // var getRows = teamTable.findElements(By.className('shsRow0Row'));
-      // var getCells = getRows.findElements(By.css('a'));
       getRows.then((element) => {
-        // element[count].getAttribute('href').then((value) => {
         element[count].getAttribute('href').then((value) => {
             var begIndex = value.indexOf('?') + 1;
             var id = value.slice(begIndex);
-            // *** what if we push first to an array where it would store all values ***
+            // we store raw data into array
             storageId.push(id);
-            // *** then reduce it from triplicates(duplicates) ***
-            // *** then do the storage.teamId.push() ***
-            // storage.teamId.push(id);
           count++;
           getId();
         });
       });
     } else {
+      // through the Set object remove duplicates
       uniqueId = [...new Set(storageId)];
       pause(2, appendToArray); // appendToArray
     }
@@ -90,15 +68,16 @@ function getId(){
 
 function appendToArray() {
   var teams = {}, teamName = '', teamCode = '';
+  // go through uniqueId and push element to storage.teamId 
   for (var i = 0; i < uniqueId.length; i++){
     storage.teamId.push(uniqueId[i]);
   }
+  // create final teams objects
   for (var j = 0; j < length; j++) {
     teamName = storage.teamN[j];
     teamCode = storage.teamId[j];
     teams[teamName] = teamCode;
   }
-  console.log(teams)
   finalData = "exports.teams = [" + JSON.stringify(teams) + "];";
   pause(1, checkFileExistance);
 }
