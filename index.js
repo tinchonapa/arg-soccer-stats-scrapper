@@ -27,8 +27,7 @@ function getTeams(){
   pause(3, function(){
     var getRowsTeams = teamTable.findElements(By.className('shs1stCol shsNamD'));
     if ( count !== length ) {
-      getRowsTeams.then((element) => {
-        console.log(element.length)
+      getRowsTeams.then((element) => { // element is the total of rows
         element[count].getText().then(function(txt) {
           storage.teamN.push(txt);
           console.log('Equipo: ', txt);
@@ -50,7 +49,7 @@ function getId(){
       var getRows = teamTable.findElements(By.css('a'));
       getRows.then((element) => {
         element[count].getAttribute('href').then((value) => {
-            var begIndex = value.indexOf('?') + 1;
+            var begIndex = value.indexOf('?') + 6;
             var id = value.slice(begIndex);
             // we store raw data into array
             storageId.push(id);
@@ -67,18 +66,19 @@ function getId(){
 }
 
 function appendToArray() {
-  var teams = {}, teamName = '', teamCode = '';
+  var objStorage = [], team = {}; 
   // go through uniqueId and push element to storage.teamId 
   for (var i = 0; i < uniqueId.length; i++){
     storage.teamId.push(uniqueId[i]);
   }
-  // create final teams objects
+  // create final team object
+    // should I have a list of objects team.name: storage.teamN[j], team.id: storage.teamCode[j];
+    // or an object with names as key and id as value
   for (var j = 0; j < length; j++) {
-    teamName = storage.teamN[j];
-    teamCode = storage.teamId[j];
-    teams[teamName] = teamCode;
+    objStorage.push({name: storage.teamN[j], id: storage.teamId[j]});
+    // objStorage.push();
   }
-  finalData = "exports.teams = [" + JSON.stringify(teams) + "];";
+  finalData = "exports.teams = " + JSON.stringify(objStorage) + ";";
   pause(1, checkFileExistance);
 }
 
