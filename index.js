@@ -76,7 +76,6 @@ function appendToArray() {
     // or an object with names as key and id as value
   for (var j = 0; j < length; j++) {
     objStorage.push({name: storage.teamN[j], id: storage.teamId[j]});
-    // objStorage.push();
   }
   finalData = "exports.teams = " + JSON.stringify(objStorage) + ";";
   pause(1, checkFileExistance);
