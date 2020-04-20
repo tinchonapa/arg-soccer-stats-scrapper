@@ -11,21 +11,7 @@ driver.get('http://resonant.stats.com/arge/rosters.asp?team=3105'); // getting t
 var { teams } = require('./teams');
 // console.log('teams: ', teams);
 
-var tableLength = 0; // total of rows in table
-var lengthId = 72; // total of ids that will be retrieved since HTML it's not properly designed
-var count = 0;
-var storage = { // storage of names and ids
-  playerId: [],
-  playerNumber: [],
-  name: [],
-  position: [],
-  height: [],
-  weight: [],
-  dob: [],
-  birthPlace: [],
-};
-var storageId = []; // place where it will be stored the raw data of id
-let uniqueId = []; // place where storage
+let playersData;
 var finalData = '';
 var teamTable = driver.findElements(By.css('tr'));
 /*function goThroughTeams(){
@@ -39,7 +25,7 @@ function getTableLength() {
   console.log('Starting...')
   teamTable.then((element) => {
     tableLength = element.length;
-    // console.log(tableLength)
+    console.log(tableLength)
   });
   pause(4, getPlayer);
 }
@@ -59,17 +45,31 @@ function getPlayer() {
       }
     }))*/
     // create script to grab data and ignore unnecesary fields(titles & players without stats)
-    /*
-     * var length = document.getElementsByTagName('tr').length;
-     * var arrOfElements = document.getElementsByTagName('tr');
-     *
-     * for(var i = 0; i < length; i++) {
-     *   if ( (arrOfElements[i].cells.length > 1) && (arrOfElements[i].cells[0].innerText.length !== 0) ) {
-     *     console.log(i, " is ", arrOfElements[i].innerText);
-     *   }
-     * } 
-     */
-    driver.executeScript()
+    var extractPlayers = function () {
+      var length = document.getElementsByTagName('tr').length;
+      var arrOfElements = document.getElementsByTagName('tr');
+      var storage = [];
+      var name, numb, pos, height, weight, dob, pob = '';
+      for(var i = 0; i < length; i++) {
+          if ( (arrOfElements[i].cells.length > 1) && (arrOfElements[i].cells[0].innerText.length !== 0) ) {
+              if ( arrOfElements[i].cells[0].innerText !== "No." ) {
+                  console.log('current plyr ', arrOfElements[i].innerText)
+                  numb = arrOfElements[i].cells[0].innerText;
+                  name = arrOfElements[i].cells[1].innerText;
+                  pos = arrOfElements[i].cells[2].innerText;
+                  height = arrOfElements[i].cells[3].innerText;
+                  weight = arrOfElements[i].cells[4].innerText;
+                  dob = arrOfElements[i].cells[5].innerText;
+                  birthPlace = arrOfElements[i].cells[6].innerText;
+                  storage.push({"numb": numb, "name": name, "pos": pos, "height": height, "weight": weight, "dob": dob, "pob": pob});
+                  console.log('Storage: ', storage)
+              }
+        }
+      }
+      return storage;
+    }
+    playersData = driver.executeScript(extractPlayers);
+    pause(1, appendToArray)
   })
 }
 
@@ -119,23 +119,24 @@ function getId() {
 function appendToArray() {
   var objStorage = [], team = {};
   // go through uniqueId and push element to storage.teamId 
-  for (var i = 0; i < uniqueId.length; i++) {
+  /*for (var i = 0; i < uniqueId.length; i++) {
     storage.teamId.push(uniqueId[i]);
-  }
+  }*/
   // create final team object
   // should I have a list of objects team.name: storage.teamN[j], team.id: storage.teamCode[j];
   // or an object with names as key and id as value
-  for (var j = 0; j < length; j++) {
+  /*for (var j = 0; j < length; j++) {
     objStorage.push({ name: storage.teamN[j], id: storage.teamId[j] });
-  }
-  finalData = "exports.teams = " + JSON.stringify(objStorage) + ";";
+  }*/
+  console.log('Players data ', playersData.Promise);
+  finalData = "exports.players = " + JSON.stringify(playersData) + ";";
   pause(1, checkFileExistance);
 }
 
 function checkFileExistance() {
-  fs.stat('teams.js', function (error, stats) {
+  fs.stat('aldosivi.js', function (error, stats) {
     if (!error) {
-      fs.unlink('teams.js', function (error) {
+      fs.unlink('aldosivi.js', function (error) {
         if (error) { error }
         console.log('The previous file is deleted and replaced with a new file');
         appendToFile();
@@ -148,7 +149,7 @@ function checkFileExistance() {
 
 function appendToFile() {
   console.log('Data added in teams.js file');
-  fs.appendFileSync('teams.js', '' + finalData + '\n');
+  fs.appendFileSync('aldosivi.js', '' + finalData + '\n');
   quitDriver();
 }
 
