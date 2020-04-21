@@ -32,18 +32,6 @@ function getTableLength() {
 
 function getPlayer() {
   pause(1, () => {
-    // driver.findElements(By.css('td')).then((element => {
-    /*teamTable.then((element => {
-      if (count !== tableLength) {
-        element[count].getText().then((txt) => {
-          console.log('Current text ', txt);
-          count++;
-          getPlayer();
-        });
-      } else {
-        pause(1, quitDriver);
-      }
-    }))*/
     // create script to grab data and ignore unnecesary fields(titles & players without stats)
     var extractPlayers = function () {
       var length = document.getElementsByTagName('tr').length;
@@ -62,58 +50,17 @@ function getPlayer() {
                   dob = arrOfElements[i].cells[5].innerText;
                   birthPlace = arrOfElements[i].cells[6].innerText;
                   storage.push({"numb": numb, "name": name, "pos": pos, "height": height, "weight": weight, "dob": dob, "pob": pob});
-                  console.log('Storage: ', storage)
+                  // console.log('Storage: ', storage)
               }
         }
       }
       return storage;
     }
-    playersData = driver.executeScript(extractPlayers);
+    driver.executeScript(extractPlayers).then((result) => {
+      playersData = result;
+    });
     pause(1, appendToArray)
   })
-}
-
-function getTeams() {
-
-  pause(3, function () {
-    var getRowsTeams = teamTable.findElements(By.className('shs1stCol shsNamD'));
-    if (count !== length) {
-      getRowsTeams.then((element) => { // element is the total of rows
-        element[count].getText().then(function (txt) {
-          storage.teamN.push(txt);
-          console.log('Equipo: ', txt);
-          count++;
-          getTeams();
-        });
-      });
-    } else {
-      count = 0;
-      pause(1, getId)
-    }
-  });
-}
-
-function getId() {
-  pause(1, function () {
-    // new variable for length to === length*3 since there are 3 links per row
-    if (count !== lengthId) {
-      var getRows = teamTable.findElements(By.css('a'));
-      getRows.then((element) => {
-        element[count].getAttribute('href').then((value) => {
-          var begIndex = value.indexOf('?') + 6;
-          var id = value.slice(begIndex);
-          // we store raw data into array
-          storageId.push(id);
-          count++;
-          getId();
-        });
-      });
-    } else {
-      // through the Set object remove duplicates
-      uniqueId = [...new Set(storageId)];
-      pause(2, appendToArray); // appendToArray
-    }
-  });
 }
 
 function appendToArray() {
@@ -128,7 +75,7 @@ function appendToArray() {
   /*for (var j = 0; j < length; j++) {
     objStorage.push({ name: storage.teamN[j], id: storage.teamId[j] });
   }*/
-  console.log('Players data ', playersData.Promise);
+  console.log('Players data ', playersData);
   finalData = "exports.players = " + JSON.stringify(playersData) + ";";
   pause(1, checkFileExistance);
 }
