@@ -9,9 +9,9 @@ var driver = new webdriver.Builder()
   .build();
 driver.get('http://resonant.stats.com/arge/rosters.asp?team=3105'); // getting the URL
 
-let count = 0;
+var count = 0;
 let totalTeams = teams.length;
-let playersData = [];
+var playersData = [];
 var finalData = '';
 var team = '';
 
@@ -33,7 +33,7 @@ function goThroughTeams(){
 function getPlayer() {
   pause(1, () => {
     // create script to grab data and ignore unnecesary fields(titles & players without stats)
-    var extractPlayers = function () {
+    var extractPlayers = function (team) {
       var length = document.getElementsByTagName('tr').length;
       var arrOfElements = document.getElementsByTagName('tr');
       var storage = [];
@@ -41,6 +41,7 @@ function getPlayer() {
       for(var i = 0; i < length; i++) {
           if ( (arrOfElements[i].cells.length > 1) && (arrOfElements[i].cells[0].innerText.length !== 0) ) {
               if ( arrOfElements[i].cells[0].innerText !== "No." ) {
+                  console.log('arg ', arguments[0])
                   console.log('current plyr ', arrOfElements[i].innerText)
                   numb = arrOfElements[i].cells[0].innerText;
                   name = arrOfElements[i].cells[1].innerText;
@@ -48,7 +49,7 @@ function getPlayer() {
                   height = arrOfElements[i].cells[3].innerText;
                   weight = arrOfElements[i].cells[4].innerText;
                   dob = arrOfElements[i].cells[5].innerText;
-                  birthPlace = arrOfElements[i].cells[6].innerText;
+                  pob = arrOfElements[i].cells[6].innerText;
                   storage.push({"numb": numb, "name": name, "pos": pos, "height": height, "weight": weight, "dob": dob, "pob": pob, "team": team});
                   // console.log('Storage: ', storage)
               }
@@ -56,13 +57,12 @@ function getPlayer() {
       }
       return storage;
     }
-    driver.executeScript(extractPlayers).then((result) => {
-      console.log('Current players: ', result);
-      playersData.concat(result);
+    driver.executeScript(extractPlayers, team).then((result) => {
+      playersData.push(...playersData,result);
     });
     count++;
     console.log(count)
-    pause(2, goThroughTeams)
+    pause(1, goThroughTeams)
   })
 }
 
@@ -78,7 +78,8 @@ function appendToArray() {
   /*for (var j = 0; j < length; j++) {
     objStorage.push({ name: storage.teamN[j], id: storage.teamId[j] });
   }*/
-  // console.log('Players data ', playersData);
+  console.log('---------------------------');
+  console.log('Players data ', playersData);
   finalData = "exports.players = " + JSON.stringify(playersData) + ";";
   pause(1, checkFileExistance);
 }
