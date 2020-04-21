@@ -7,7 +7,6 @@ var driver = new webdriver.Builder()
   .forBrowser('chrome')
   //  .setChromeOptions(new chromeOption.Options().headless()) //headless means work in the background without opening a browser
   .build();
-driver.get('http://resonant.stats.com/arge/rosters.asp?team=3105'); // getting the URL
 
 var count = 0;
 let totalTeams = teams.length;
@@ -21,14 +20,11 @@ function goThroughTeams(){
     driver.get(`http://resonant.stats.com/arge/rosters.asp?team=${teams[count].id}`)
     team = teams[count].name;
     console.log('Current team: ', team)
-    pause(2, getPlayer);
+    pause(1, getPlayer);
   } else {
     pause(1, appendToArray)
   }
 }
-
-// pause(2, getPlayer);
-
 
 function getPlayer() {
   pause(1, () => {
@@ -37,20 +33,21 @@ function getPlayer() {
       var length = document.getElementsByTagName('tr').length;
       var arrOfElements = document.getElementsByTagName('tr');
       var storage = [];
-      var name, numb, pos, height, weight, dob, pob = '';
+      var begIndex = 0;
+      var id, name, numb, pos, height, weight, dob, pob = ''; // variables for values of obj
       for(var i = 0; i < length; i++) {
-          if ( (arrOfElements[i].cells.length > 1) && (arrOfElements[i].cells[0].innerText.length !== 0) ) {
-              if ( arrOfElements[i].cells[0].innerText !== "No." ) {
-                  console.log('arg ', arguments[0])
-                  console.log('current plyr ', arrOfElements[i].innerText)
+          if ( (arrOfElements[i].cells.length > 1) && (arrOfElements[i].cells[0].innerText.length !== 0) ) { // players without shirt# mean that they didn't play. Skip them
+              if ( arrOfElements[i].cells[0].innerText !== "No." ) { // skip header rows
                   numb = arrOfElements[i].cells[0].innerText;
+                  begIndex = arrOfElements[i].cells[1].firstChild.href.indexOf('?') + 8;
+                  id = arrOfElements[i].cells[1].firstChild.href.slice(begIndex);
                   name = arrOfElements[i].cells[1].innerText;
                   pos = arrOfElements[i].cells[2].innerText;
                   height = arrOfElements[i].cells[3].innerText;
                   weight = arrOfElements[i].cells[4].innerText;
                   dob = arrOfElements[i].cells[5].innerText;
                   pob = arrOfElements[i].cells[6].innerText;
-                  storage.push({"numb": numb, "name": name, "pos": pos, "height": height, "weight": weight, "dob": dob, "pob": pob, "team": team});
+                  storage.push({"id": id, "numb": numb, "name": name, "pos": pos, "height": height, "weight": weight, "dob": dob, "pob": pob, "team": team});
                   // console.log('Storage: ', storage)
               }
         }
@@ -58,7 +55,7 @@ function getPlayer() {
       return storage;
     }
     driver.executeScript(extractPlayers, team).then((result) => {
-      playersData.push(...playersData,result);
+      playersData.push(...result);
     });
     count++;
     console.log(count)
@@ -67,19 +64,6 @@ function getPlayer() {
 }
 
 function appendToArray() {
-  // var objStorage = [], team = {};
-  // go through uniqueId and push element to storage.teamId 
-  /*for (var i = 0; i < uniqueId.length; i++) {
-    storage.teamId.push(uniqueId[i]);
-  }*/
-  // create final team object
-  // should I have a list of objects team.name: storage.teamN[j], team.id: storage.teamCode[j];
-  // or an object with names as key and id as value
-  /*for (var j = 0; j < length; j++) {
-    objStorage.push({ name: storage.teamN[j], id: storage.teamId[j] });
-  }*/
-  console.log('---------------------------');
-  console.log('Players data ', playersData);
   finalData = "exports.players = " + JSON.stringify(playersData) + ";";
   pause(1, checkFileExistance);
 }
@@ -103,7 +87,6 @@ function appendToFile() {
   fs.appendFileSync('players.js', '' + finalData + '\n');
   quitDriver();
 }
-
 
 function pause(time, callback) {
   setTimeout(callback, time * 1000);
