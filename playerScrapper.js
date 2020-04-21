@@ -2,33 +2,33 @@ const chromeOption = require('selenium-webdriver/chrome');
 var webdriver = require('selenium-webdriver'), By = webdriver.By;
 var chrome = require('chromedriver');
 var fs = require('fs');
+var { teams } = require('./teams'); // get db of teams
 var driver = new webdriver.Builder()
   .forBrowser('chrome')
   //  .setChromeOptions(new chromeOption.Options().headless()) //headless means work in the background without opening a browser
   .build();
 driver.get('http://resonant.stats.com/arge/rosters.asp?team=3105'); // getting the URL
 
-var { teams } = require('./teams');
-// console.log('teams: ', teams);
-
-let playersData;
+let count = 0;
+let totalTeams = teams.length;
+let playersData = [];
 var finalData = '';
-var teamTable = driver.findElements(By.css('tr'));
-/*function goThroughTeams(){
-  for (var i = 0; i < exportedTeams.teams.length)
-  driver.get(`http://resonant.stats.com/arg/rosters.asp?${teams[i].id}`)
-}*/
+var team = '';
 
-pause(2, getTableLength);
-
-function getTableLength() {
-  console.log('Starting...')
-  teamTable.then((element) => {
-    tableLength = element.length;
-    console.log(tableLength)
-  });
-  pause(4, getPlayer);
+pause(2, goThroughTeams);
+function goThroughTeams(){
+  if ( count !== totalTeams ) {
+    driver.get(`http://resonant.stats.com/arge/rosters.asp?team=${teams[count].id}`)
+    team = teams[count].name;
+    console.log('Current team: ', team)
+    pause(2, getPlayer);
+  } else {
+    pause(1, appendToArray)
+  }
 }
+
+// pause(2, getPlayer);
+
 
 function getPlayer() {
   pause(1, () => {
@@ -49,7 +49,7 @@ function getPlayer() {
                   weight = arrOfElements[i].cells[4].innerText;
                   dob = arrOfElements[i].cells[5].innerText;
                   birthPlace = arrOfElements[i].cells[6].innerText;
-                  storage.push({"numb": numb, "name": name, "pos": pos, "height": height, "weight": weight, "dob": dob, "pob": pob});
+                  storage.push({"numb": numb, "name": name, "pos": pos, "height": height, "weight": weight, "dob": dob, "pob": pob, "team": team});
                   // console.log('Storage: ', storage)
               }
         }
@@ -57,14 +57,17 @@ function getPlayer() {
       return storage;
     }
     driver.executeScript(extractPlayers).then((result) => {
-      playersData = result;
+      console.log('Current players: ', result);
+      playersData.concat(result);
     });
-    pause(1, appendToArray)
+    count++;
+    console.log(count)
+    pause(2, goThroughTeams)
   })
 }
 
 function appendToArray() {
-  var objStorage = [], team = {};
+  // var objStorage = [], team = {};
   // go through uniqueId and push element to storage.teamId 
   /*for (var i = 0; i < uniqueId.length; i++) {
     storage.teamId.push(uniqueId[i]);
@@ -75,15 +78,15 @@ function appendToArray() {
   /*for (var j = 0; j < length; j++) {
     objStorage.push({ name: storage.teamN[j], id: storage.teamId[j] });
   }*/
-  console.log('Players data ', playersData);
+  // console.log('Players data ', playersData);
   finalData = "exports.players = " + JSON.stringify(playersData) + ";";
   pause(1, checkFileExistance);
 }
 
 function checkFileExistance() {
-  fs.stat('aldosivi.js', function (error, stats) {
+  fs.stat('players.js', function (error, stats) {
     if (!error) {
-      fs.unlink('aldosivi.js', function (error) {
+      fs.unlink('players.js', function (error) {
         if (error) { error }
         console.log('The previous file is deleted and replaced with a new file');
         appendToFile();
@@ -95,8 +98,8 @@ function checkFileExistance() {
 }
 
 function appendToFile() {
-  console.log('Data added in teams.js file');
-  fs.appendFileSync('aldosivi.js', '' + finalData + '\n');
+  console.log('Data added in players.js file');
+  fs.appendFileSync('players.js', '' + finalData + '\n');
   quitDriver();
 }
 
