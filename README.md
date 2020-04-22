@@ -7,8 +7,8 @@ Steps to run the application smoothly:
 
 Data scrape from statsperform, and for the soledly use of educational purposes.
 
- | Goalie Stats Notes |
--------- | ---- | ---- | ----
+-------- | Goalie Stats Notes | ---- | ----
+-------- | ------------------ | ---- | ----
 SP Acr | SP Def | ENG Def | ENG Acr 
 PJ	| Partidos jugados | Games Played | GP
 Min	| Minutos | Minutes | MIN
