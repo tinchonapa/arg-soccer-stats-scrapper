@@ -25,9 +25,10 @@ SRG	| Sin recibir gol | Clean Sheets | CS
 TA	| Tarjetas amarillas | Yellow Cards | YC
 TR	| Tarjetas rojas | Red Cards | RC
 
- | Players |
-----|----|----|----
+Players
+----------
 SP Acr | SP Def | ENG Def | ENG Acr 
+----|----|----|----
 PJ	| Partidos jugados | Games Played | GP
 Min	| Minutos | Minutes | MIN
 G	| Goles | Goals | G
