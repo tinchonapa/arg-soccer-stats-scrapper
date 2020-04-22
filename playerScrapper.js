@@ -17,12 +17,12 @@ var team = '';
 pause(2, goThroughTeams);
 function goThroughTeams(){
   if ( count !== totalTeams ) {
-    driver.get(`http://resonant.stats.com/arge/rosters.asp?team=${teams[count].id}`)
+    driver.get(`http://resonant.stats.com/arge/rosters.asp?team=${teams[count].id}`);
     team = teams[count].name;
     console.log('Current team: ', team)
     pause(1, getPlayer);
   } else {
-    pause(1, appendToArray)
+    pause(1, appendToArray);
   }
 }
 
