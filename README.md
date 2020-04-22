@@ -7,8 +7,8 @@ Steps to run the application smoothly:
 
 Data scrape from statsperform, and for the soledly use of educational purposes.
 
-Goalie Stats Notes|
-----|----|----|----
+ | Goalie Stats Notes |
+-------- | ---- | ---- | ----
 SP Acr | SP Def | ENG Def | ENG Acr 
 PJ	| Partidos jugados | Games Played | GP
 Min	| Minutos | Minutes | MIN
@@ -25,7 +25,7 @@ SRG	| Sin recibir gol | Clean Sheets | CS
 TA	| Tarjetas amarillas | Yellow Cards | YC
 TR	| Tarjetas rojas | Red Cards | RC
 
-Players
+ | Players |
 ----|----|----|----
 SP Acr | SP Def | ENG Def | ENG Acr 
 PJ	| Partidos jugados | Games Played | GP
@@ -42,3 +42,8 @@ F	| Faltas cometidas | Fouls Committed | FC
 FR	| Faltas recibidas | Fouls Suffered | FS
 Ce	| Centros | Crosses | CROSSES
 FL	| Fuera de Lugar | Offsides | OF
+
+First Header | Second Header
+------------ | -------------
+Content from cell 1 | Content from cell 2
+Content in the first column | Content in the second column
