@@ -1,4 +1,4 @@
-## :argentina::soccer: Argentinean Soccer League Stats Scrapper :argentina::soccer:
+## :argentina::soccer: Argentinean Soccer League Stats Scrapper :soccer::argentina:
 
 Steps to run the application smoothly:
 1. Requires packages: chromedriver:^81.0.0, fs:0.0.1-security, selenium-webdriver:^4.0.0-alpha.7
@@ -7,7 +7,7 @@ Steps to run the application smoothly:
 4. Run node ./playerScrapper.js to retrieve players personal data (name, height, weight, position, dob)
 5. Run node ./statsScrapper.js to retrieve data accumulated on each game they played.
 
-### Goalie Stats Notes
+### Goalkeeper Stats Notes
 SP Acr | Spanish Def | English Def | ENG Acr 
 -------- | ------------------ | ---- | ----
 PJ	| Partidos jugados | Games Played | GP
