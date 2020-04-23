@@ -1,15 +1,15 @@
-## Argentinean Soccer League Stats Scrapper
+## :argentina::soccer: Argentinean Soccer League Stats Scrapper :argentina::soccer:
 
 Steps to run the application smoothly:
 1. Requires packages: chromedriver:^81.0.0, fs:0.0.1-security, selenium-webdriver:^4.0.0-alpha.7
 2. Run npm install in terminal to install
+3. Run node ./index.js to retrieve teams first. The file with teams that creates it is used to navigate to different teams while retrieving players data.
+4. Run node ./playerScrapper.js to retrieve players personal data (name, height, weight, position, dob)
+5. Run node ./statsScrapper.js to retrieve data accumulated on each game they played.
 
-
-Data scrape from statsperform, and for the soledly use of educational purposes.
-
--------- | Goalie Stats Notes | ---- | ----
+### Goalie Stats Notes
+SP Acr | Spanish Def | English Def | ENG Acr 
 -------- | ------------------ | ---- | ----
-SP Acr | SP Def | ENG Def | ENG Acr 
 PJ	| Partidos jugados | Games Played | GP
 Min	| Minutos | Minutes | MIN
 GR	| Goles recibidos | Goals Conceded | GC
@@ -25,9 +25,8 @@ SRG	| Sin recibir gol | Clean Sheets | CS
 TA	| Tarjetas amarillas | Yellow Cards | YC
 TR	| Tarjetas rojas | Red Cards | RC
 
-Players
-----------
-SP Acr | SP Def | ENG Def | ENG Acr 
+### Players Stats Notes
+SP Acr | Spanish Def | English Def | ENG Acr 
 ----|----|----|----
 PJ	| Partidos jugados | Games Played | GP
 Min	| Minutos | Minutes | MIN
@@ -44,7 +43,4 @@ FR	| Faltas recibidas | Fouls Suffered | FS
 Ce	| Centros | Crosses | CROSSES
 FL	| Fuera de Lugar | Offsides | OF
 
-First Header | Second Header
------------- | -------------
-Content from cell 1 | Content from cell 2
-Content in the first column | Content in the second column
+Data scraped comes from statsperform,com, and it is use soledly for educational purposes.
